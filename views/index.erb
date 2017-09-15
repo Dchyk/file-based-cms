@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <title>CMS</title>
+  </head>
+
+  <body>
+    <ul><% @files.each do |file_name| %>
+          <li>
+            <a href="#"><%= file_name %></a>
+          </li>
+        <% end %>
+    </ul>
+
+    <p><a href="test">Test</a></p>
+
+  </body>
+
+</html>
