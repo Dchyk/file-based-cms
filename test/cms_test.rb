@@ -145,9 +145,15 @@ class CMSTest < Minitest::Test
   end
 
   def test_create_new_document_without_filename
-    post "/create", {filename: ""}, admin_session
+    post "/create", {file_name: ""}, admin_session
     assert_equal 422, last_response.status
     assert_includes last_response.body, "A name is required"
+  end
+
+  def test_create_new_document_with_invalid_extension
+    post "/create", {file_name: "test.jpg"}, admin_session
+    assert_equal 302, last_response.status
+    assert_equal "Can't create file - files must be either *.md or *.txt.", session[:message]
   end
 
   def test_delete_document
