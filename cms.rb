@@ -2,6 +2,7 @@ require 'yaml'
 
 require 'sinatra'
 require 'sinatra/reloader'
+require 'sinatra/content_for'
 require 'tilt/erubis'
 require 'redcarpet'
 require 'pry'
@@ -81,6 +82,23 @@ def valid_filetype?(filename)
   filename.match(/[.](txt|md)\b/)
 end
 
+def valid_image_filetype?(filename)
+  filename.match(/[.](jpg|jpeg|gif|png)\b/)
+end
+
+def require_valid_image_filetype(filename)
+  unless valid_image_filetype?(filename)
+    session[:message] = "Can't upload this image - must be *.jpg, *.jpeg, *.gif or *.png."
+    status 422
+    redirect "/upload_image"
+  end
+end
+
+def return_images_in_public_folder
+  pattern = File.join('./public/', "*")
+
+end
+
 def require_valid_filetype(filename)
   unless valid_filetype?(filename)
     session[:message] = "Can't create file - files must be either *.md or *.txt."
@@ -110,9 +128,17 @@ end
 
 get "/" do
   pattern = File.join(data_path, "*")
+
   @files = Dir.glob(pattern).map do |filename|
     File.basename(filename)
   end
+
+  image_pattern = File.join('./public/', "*")
+
+  @images = Dir.glob(image_pattern).map do |filename|
+    File.basename(filename) if valid_image_filetype?(filename)
+  end.compact
+
   erb :index, layout: :layout
 end
 
@@ -144,22 +170,32 @@ post "/create" do
 end
 
 get "/upload_image" do
+  requre_signed_in_user
+
   erb :upload_image
 end
 
 post "/save_image" do
-  @filename = params[:image_file][:filename]
-  incoming_image_file = params[:image_file][:tempfile]
+  if params[:image_file].nil?
+    session[:message] = "You must select a file to upload."
+    status 422
+    erb :upload_image
+  else
+    @filename = params[:image_file][:filename]
+    incoming_image_file = params[:image_file][:tempfile]
+
+    require_valid_image_filetype(@filename)
   # how to make the file path work correctly?
   # new_file_path = File.join(data_path, @filename) 
-  new_file_path = File.join('./public/', @filename) 
-  
-  File.open(new_file_path, 'wb') do |image|
-    image.write(incoming_image_file.read)
-  end
+    new_file_path = File.join('./public/', @filename) 
+    
+    File.open(new_file_path, 'wb') do |image|
+      image.write(incoming_image_file.read)
+    end
 
-  session[:message] = "'#{@filename}' was successfully saved."
-  redirect "/"
+    session[:message] = "'#{@filename}' was successfully saved."
+    redirect "/"
+  end
 end
 
 get "/:file_name" do

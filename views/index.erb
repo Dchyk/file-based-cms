@@ -1,12 +1,20 @@
-
-    <ul><% @files.each do |file| %>
-          <li>
+  <h1>Files</h1>
+    <ul class="files"><% @files.each do |file| %>
+          <li class="file">
             <a href="/<%= file %>"><%= file %></a>--<a href="/<%= file %>/edit">Edit</a>--<form class="inline" action="/<%= file %>/delete" method="post"><button type="submit">Delete</button></form><form class="inline" action="/<%= file %>/duplicate" method="post"><button type="submit">Duplicate</button></form>
           </li>
         <% end %>
     </ul>
 
 <p><a href="/new">Add a new file</a></p>
+
+  <h2>Images</h2>
+    <ul class="images"><% @images.each do |image| %>
+      <li class="image">
+        <a href="<%= image %>"><%= image %></a>
+      </li>
+        <% end %>
+    </ul>
 
 <p><a href="/upload_image">Upload a new image</a></p>
 

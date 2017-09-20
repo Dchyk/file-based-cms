@@ -9,5 +9,6 @@
       <p class="message"><%= session.delete(:message) %></p>
     <% end %>
   <%= yield %>
+  <%= yield_content :main_index_link %>
   </body>
 </html>

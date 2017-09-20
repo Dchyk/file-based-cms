@@ -247,4 +247,6 @@ class CMSTest < Minitest::Test
     assert_equal 302, last_response.status
     assert_equal "That username already exists! Username must be unique.", session[:message]
   end
+
+  
 end

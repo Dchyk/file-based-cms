@@ -3,6 +3,26 @@ body {
   font-family: sans-serif;
 }
 
+ul.files {
+  list-style-image: url('../file-25.gif');
+}
+
+ul.images {
+  list-style-image: url('../image-25.gif');
+}
+
+.file {
+  padding: 10px;
+  margin-bottom: 2px;
+  background: #AFF5FF;
+}
+
+.image {
+  padding: 10px;
+  margin-bottom: 2px;
+  background: #A7F9B3;
+}
+
 .message {
   padding: 10px;
   background: #FFFF99;
