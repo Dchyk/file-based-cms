@@ -1,5 +1,10 @@
-{
-  admin: $2a$10$NHUfz3ZYivOGjhTj1ppdx.S6ghZecMYoPyS98XQ/H7uJnD.DYN8py,
-  alex: $2a$10$XN2qdUgKpF8s5sZ1fnyGjuFetNwG7kxmpwuwDzJZnHIbC6LH0r9re,
-  ali: $2a$10$EU8vantsD2/vA35pPC/ncuqWZvTRKnwGJUgn1.wC.ummDz6tUpANi
-}
+---
+admin: "$2a$10$NHUfz3ZYivOGjhTj1ppdx.S6ghZecMYoPyS98XQ/H7uJnD.DYN8py"
+alex: "$2a$10$XN2qdUgKpF8s5sZ1fnyGjuFetNwG7kxmpwuwDzJZnHIbC6LH0r9re"
+ali: "$2a$10$EU8vantsD2/vA35pPC/ncuqWZvTRKnwGJUgn1.wC.ummDz6tUpANi"
+user1: !ruby/string:BCrypt::Password
+  str: "$2a$10$bFXMFBefwJzsQHjcYK7xGO4F1fS1cVOiZLrrLfar/MPWzGR8NzM7G"
+  version: 2a
+  cost: 10
+  salt: "$2a$10$bFXMFBefwJzsQHjcYK7xGO"
+  checksum: 4F1fS1cVOiZLrrLfar/MPWzGR8NzM7G

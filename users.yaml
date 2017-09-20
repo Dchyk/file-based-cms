@@ -1,5 +1,28 @@
-{
-  admin: $2a$10$NHUfz3ZYivOGjhTj1ppdx.S6ghZecMYoPyS98XQ/H7uJnD.DYN8py,
-  alex: $2a$10$XN2qdUgKpF8s5sZ1fnyGjuFetNwG7kxmpwuwDzJZnHIbC6LH0r9re,
-  ali: $2a$10$EU8vantsD2/vA35pPC/ncuqWZvTRKnwGJUgn1.wC.ummDz6tUpANi
-}
+---
+admin: "$2a$10$NHUfz3ZYivOGjhTj1ppdx.S6ghZecMYoPyS98XQ/H7uJnD.DYN8py"
+alex: "$2a$10$XN2qdUgKpF8s5sZ1fnyGjuFetNwG7kxmpwuwDzJZnHIbC6LH0r9re"
+ali: "$2a$10$EU8vantsD2/vA35pPC/ncuqWZvTRKnwGJUgn1.wC.ummDz6tUpANi"
+test: !ruby/string:BCrypt::Password
+  str: "$2a$10$fC6OrxziiSu8qVQGDtySeucY9P7fjtkqM7/DSKz5plqOnRX1p5udK"
+  version: 2a
+  cost: 10
+  salt: "$2a$10$fC6OrxziiSu8qVQGDtySeu"
+  checksum: cY9P7fjtkqM7/DSKz5plqOnRX1p5udK
+liza: !ruby/string:BCrypt::Password
+  str: "$2a$10$CpbWqA6SCKwfPY60WX3nNunvpi0xEL1tvV9VrFf.hNFK8rmfdklNW"
+  version: 2a
+  cost: 10
+  salt: "$2a$10$CpbWqA6SCKwfPY60WX3nNu"
+  checksum: nvpi0xEL1tvV9VrFf.hNFK8rmfdklNW
+buzz: !ruby/string:BCrypt::Password
+  str: "$2a$10$UVVCR.EtElsqy0fh2oot1ejivXOOetiSKt4pMZlxpGVUS/4Ixz2PG"
+  version: 2a
+  cost: 10
+  salt: "$2a$10$UVVCR.EtElsqy0fh2oot1e"
+  checksum: jivXOOetiSKt4pMZlxpGVUS/4Ixz2PG
+lightyear: !ruby/string:BCrypt::Password
+  str: "$2a$10$d1O1/PnR.3V5FSuT97/hJOIMMT5USrg2eMBHQ9fkLSDBfRrHbZ17e"
+  version: 2a
+  cost: 10
+  salt: "$2a$10$d1O1/PnR.3V5FSuT97/hJO"
+  checksum: IMMT5USrg2eMBHQ9fkLSDBfRrHbZ17e

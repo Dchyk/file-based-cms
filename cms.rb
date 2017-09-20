@@ -6,6 +6,7 @@ require 'tilt/erubis'
 require 'redcarpet'
 require 'pry'
 require 'bcrypt'
+require "fileutils"
 
 configure do
   enable :sessions
@@ -26,14 +27,20 @@ def render_markdown(text)
 end
 
 def load_file_content(path)
-  content = File.read(path)
+  @content = File.read(path)
   case File.extname(path)
   when ".txt"
     headers["Content-Type"] = "text/plain"
-    content
+    @content
   when ".md"
-    render_markdown(content)
+    render_markdown(@content)
+  when ".jpeg"
+    erb :image
   end
+end
+
+def load_image_content(name)
+
 end
 
 def user_is_signed_in?
@@ -47,13 +54,16 @@ def requre_signed_in_user
   end 
 end
 
-def load_usernames
+def get_credentials_path
   credentials_path = if ENV["RACK_ENV"] == "test"
     File.expand_path("../test/users.yaml", __FILE__)
   else
     File.expand_path("../users.yaml", __FILE__)
   end
-  YAML.load_file(credentials_path)
+end
+
+def load_usernames
+  YAML.load_file(get_credentials_path)
 end
 
 def valid_credentials?(username, password)
@@ -76,6 +86,25 @@ def require_valid_filetype(filename)
     session[:message] = "Can't create file - files must be either *.md or *.txt."
     status 422
     redirect "/new"
+  end
+end
+
+def duplicate_file_name(filename)
+  basename  = filename.split(".").first
+  extension = File.extname(filename)
+
+  add_number_to_filename(basename) + extension
+end
+
+def add_number_to_filename(filename)
+  filenumber = filename.scan(/[0-9]/).join.to_i
+
+  if filenumber > 0
+    filenumber += 1
+    new_copy_number = "copy" + filenumber.to_s
+    filename.gsub(/copy\d*/, new_copy_number)
+  else
+    filename + "-copy1"
   end
 end
 
@@ -114,6 +143,25 @@ post "/create" do
   end
 end
 
+get "/upload_image" do
+  erb :upload_image
+end
+
+post "/save_image" do
+  @filename = params[:image_file][:filename]
+  incoming_image_file = params[:image_file][:tempfile]
+  # how to make the file path work correctly?
+  # new_file_path = File.join(data_path, @filename) 
+  new_file_path = File.join('./public/', @filename) 
+  
+  File.open(new_file_path, 'wb') do |image|
+    image.write(incoming_image_file.read)
+  end
+
+  session[:message] = "'#{@filename}' was successfully saved."
+  redirect "/"
+end
+
 get "/:file_name" do
   file_path = File.join(data_path, params[:file_name])
 
@@ -133,6 +181,18 @@ get "/:file_name/edit" do
 
   @content = File.read(file_path)
   erb :edit
+end
+
+post "/:file_name/duplicate" do
+  old_file_path = File.join(data_path, params[:file_name])
+
+  new_file_name = duplicate_file_name(params[:file_name])
+  new_file_path = File.join(data_path, new_file_name)
+
+  FileUtils.copy_file(old_file_path, new_file_path)
+
+  session[:message] = "'#{params[:file_name]}' has been duplicated as '#{new_file_name}'."
+  redirect "/"
 end
 
 post "/users/signin" do
@@ -182,3 +242,32 @@ get "/users/signin" do
   erb :signin
 end
 
+get "/users/create" do
+
+  erb :create_user
+end
+
+post "/users/create" do
+  username = params[:username]
+  password = params[:password]
+
+  credentials = load_usernames
+
+
+  if credentials.key?(username)
+    session[:message] = "That username already exists! Username must be unique."
+    redirect "/users/create"
+  else
+    credentials[username] = BCrypt::Password.create(password)
+    
+    File.open(get_credentials_path, "w") do |file|
+      file.write(credentials.to_yaml)
+    end
+
+    session[:message] = "User '#{username}' successfully created."
+    redirect "/"
+    # Then save the username and password in users.yaml
+    # Save a message saying username has been created in session
+    # Redirect to homepage? Or, sign in automatically
+  end
+end

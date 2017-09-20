@@ -211,4 +211,40 @@ class CMSTest < Minitest::Test
     assert_includes last_response.body, "You have been signed out"
     assert_includes last_response.body, "Sign In"
   end
+
+  def test_duplicate_file
+    create_document("test.txt")
+    post "/test.txt/duplicate", {}, {"rack.session" => { username: "admin"}}
+
+    assert_equal 302, last_response.status
+    assert_equal "'test.txt' has been duplicated as 'test-copy1.txt'.", session[:message]
+
+    get "/"
+    assert_includes last_response.body, "test-copy1.txt"
+  end
+
+  def test_create_and_login_new_user
+    # Skipped, otherwise the test fails because the username it creates is still 
+    # in the testing yaml file
+    skip
+    post "/users/create", { username: "user1", password: "pass1" }
+
+    assert_equal 302, last_response.status
+    assert_equal "User 'user1' successfully created.", session[:message]
+
+    post "/users/signin", username: "user1", password: "pass1"
+    assert_equal 302, last_response.status
+    assert_equal "Welcome!", session[:message]
+    assert_equal "user1", session[:username]
+
+    get last_response["Location"]
+    assert_includes last_response.body, "Signed in as user1"
+  end
+
+  def test_create_user_with_existing_name
+    post "/users/create", { username: "admin", password: "pass2" }
+
+    assert_equal 302, last_response.status
+    assert_equal "That username already exists! Username must be unique.", session[:message]
+  end
 end

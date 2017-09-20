@@ -1,0 +1,14 @@
+<p>Please select an image file to upload.</p>
+
+<p class="note">Valid filetypes are *.jpg, *.gif, and *.png</p>
+
+<form action="/save_image" method="post" enctype="multipart/form-data">
+  
+    <label for="image_file">Choose an image file:</label>
+
+    <div>
+    <input type="file" name="image_file" id="image_file">
+    </div>
+
+    <button type="submit">Upload Image</button>
+</form>
