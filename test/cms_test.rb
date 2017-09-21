@@ -153,7 +153,7 @@ class CMSTest < Minitest::Test
   def test_create_new_document_with_invalid_extension
     post "/create", {file_name: "test.jpg"}, admin_session
     assert_equal 302, last_response.status
-    assert_equal "Can't create file - files must be either *.md or *.txt.", session[:message]
+    assert_equal "Invalid filename - name can't be blank and files must be either *.md or *.txt.", session[:message]
   end
 
   def test_delete_document
@@ -248,5 +248,19 @@ class CMSTest < Minitest::Test
     assert_equal "That username already exists! Username must be unique.", session[:message]
   end
 
-  
+  def test_uploading_image_file
+    skip
+    post "/save_image", "image_file" => Rack::Test::UploadedFile.new("me.jpg", "image/jpeg")
+    # Create an image file for testing
+    # Test the success message?
+
+  end
+
+  def test_uploading_invalid_image_filetype
+
+  end
+
+  def test_delete_image
+
+  end
 end

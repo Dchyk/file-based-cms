@@ -35,13 +35,7 @@ def load_file_content(path)
     @content
   when ".md"
     render_markdown(@content)
-  when ".jpeg"
-    erb :image
   end
-end
-
-def load_image_content(name)
-
 end
 
 def user_is_signed_in?
@@ -115,7 +109,21 @@ def duplicate_file_name(filename)
 end
 
 def add_number_to_filename(filename)
+  # Load all files and check for previous version numbers
+
+  #@files.select { |filename| filename.include?("copy")}.sort_by { |file| file.scan(/[0-9]/).join }
+
+  pattern = File.join(data_path, "*")
+
+  @files = Dir.glob(pattern).map do |filename|
+    File.basename(filename)
+  end
+
+  last_existing_version_number = @files.select { |filename| filename.scan(/[0-9]/).join }.max
+
   filenumber = filename.scan(/[0-9]/).join.to_i
+
+  # binding.pry
 
   if filenumber > 0
     filenumber += 1
