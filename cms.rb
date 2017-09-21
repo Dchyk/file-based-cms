@@ -48,7 +48,7 @@ def user_is_signed_in?
   session.key?(:username)
 end
 
-def requre_signed_in_user
+def require_signed_in_user
   unless user_is_signed_in?
     session[:message] = "You must be signed in to do that."
     redirect "/"
@@ -79,7 +79,7 @@ def valid_credentials?(username, password)
 end
 
 def valid_filetype?(filename)
-  filename.match(/[.](txt|md)\b/)
+  filename.match(/\S[.](txt|md)\b/)
 end
 
 def valid_image_filetype?(filename)
@@ -101,7 +101,7 @@ end
 
 def require_valid_filetype(filename)
   unless valid_filetype?(filename)
-    session[:message] = "Can't create file - files must be either *.md or *.txt."
+    session[:message] = "Invalid filename - name can't be blank and files must be either *.md or *.txt."
     status 422
     redirect "/new"
   end
@@ -135,6 +135,7 @@ get "/" do
 
   image_pattern = File.join('./public/', "*")
 
+  # This could be done with #select valid images, and then #map
   @images = Dir.glob(image_pattern).map do |filename|
     File.basename(filename) if valid_image_filetype?(filename)
   end.compact
@@ -143,13 +144,13 @@ get "/" do
 end
 
 get "/new" do
-  requre_signed_in_user
+  require_signed_in_user
 
   erb :new
 end
 
 post "/create" do
-  requre_signed_in_user
+  require_signed_in_user
 
   filename = params[:file_name].to_s.strip
 
@@ -170,7 +171,7 @@ post "/create" do
 end
 
 get "/upload_image" do
-  requre_signed_in_user
+  require_signed_in_user
 
   erb :upload_image
 end
@@ -210,7 +211,7 @@ get "/:file_name" do
 end
 
 get "/:file_name/edit" do
-  requre_signed_in_user
+  require_signed_in_user
 
   @file_name = params[:file_name]
   file_path = File.join(data_path, params[:file_name])
@@ -220,6 +221,8 @@ get "/:file_name/edit" do
 end
 
 post "/:file_name/duplicate" do
+  require_signed_in_user
+
   old_file_path = File.join(data_path, params[:file_name])
 
   new_file_name = duplicate_file_name(params[:file_name])
@@ -254,7 +257,7 @@ post "/users/signout" do
 end
 
 post "/:file_name" do
-  requre_signed_in_user
+  require_signed_in_user
 
   file_path = File.join(data_path, params[:file_name])
   File.write(file_path, params[:content])
@@ -264,9 +267,19 @@ post "/:file_name" do
 end
 
 post "/:file_name/delete" do 
-  requre_signed_in_user
+  require_signed_in_user
 
   file_path = File.join(data_path, params[:file_name])
+  File.delete(file_path)
+
+  session[:message] = "#{params[:file_name]} has been deleted."
+  redirect "/"
+end
+
+post "/:file_name/delete_image" do 
+  require_signed_in_user
+
+  file_path = File.join('./public/', params[:file_name])
   File.delete(file_path)
 
   session[:message] = "#{params[:file_name]} has been deleted."

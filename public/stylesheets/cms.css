@@ -11,6 +11,30 @@ ul.images {
   list-style-image: url('../image-25.gif');
 }
 
+button.edit {
+  background: #EAFCFF;
+  border-radius: 8px;
+  padding: 8px 8px;
+  text-align: center;
+  text-decoration: none;
+}
+
+button.delete {
+  background: #FF8484;
+  border-radius: 8px;
+  padding: 8px 8px;
+  text-align: center;
+  text-decoration: none;
+}
+
+button.duplicate {
+  background: #A7F9B3;
+  border-radius: 8px;
+  padding: 8px 8px;
+  text-align: center;
+  text-decoration: none;
+}
+
 .file {
   padding: 10px;
   margin-bottom: 2px;

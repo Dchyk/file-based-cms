@@ -1,7 +1,10 @@
   <h1>Files</h1>
     <ul class="files"><% @files.each do |file| %>
           <li class="file">
-            <a href="/<%= file %>"><%= file %></a>--<a href="/<%= file %>/edit">Edit</a>--<form class="inline" action="/<%= file %>/delete" method="post"><button type="submit">Delete</button></form><form class="inline" action="/<%= file %>/duplicate" method="post"><button type="submit">Duplicate</button></form>
+            <a href="/<%= file %>"><%= file %></a>
+            </form><form class="inline" action="/<%= file %>/edit" method="get"><button class="edit" type="submit">Edit</button></form>
+            </form><form class="inline" action="/<%= file %>/duplicate" method="post"><button class="duplicate" type="submit">Duplicate</button></form>
+            <form class="inline" action="/<%= file %>/delete" method="post"><button class="delete" type="submit">Delete</button></form>
           </li>
         <% end %>
     </ul>
@@ -12,6 +15,7 @@
     <ul class="images"><% @images.each do |image| %>
       <li class="image">
         <a href="<%= image %>"><%= image %></a>
+        <form class="inline" action="/<%= image %>/delete_image" method="post"><button class="delete" type="submit">Delete</button></form>
       </li>
         <% end %>
     </ul>
